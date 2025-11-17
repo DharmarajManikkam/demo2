@@ -12,20 +12,22 @@ from databricks.connect import DatabricksSession
 
 
 def get_spark_session():
-    print("Initializing Databricks Spark session via Databricks Connect v15...")
+    print("Initializing Databricks Spark session via Databricks Connect v15 (Serverless)...")
 
     cfg = Config(
         host=os.getenv("DATABRICKS_HOST"),
         token=os.getenv("DATABRICKS_TOKEN"),
+        warehouse_id=os.getenv("DATABRICKS_WAREHOUSE_ID"),  # serverless warehouse
     )
 
+    # Optional override if needed
     if os.getenv("DATABRICKS_HTTP_PATH"):
         cfg.http_path = os.getenv("DATABRICKS_HTTP_PATH")
 
     spark = DatabricksSession.builder.sdkConfig(cfg).getOrCreate()
-
-    print("Spark session created successfully!")
+    print("Spark session connected to serverless warehouse!")
     return spark
+
 
 
 # -------------------------------------------
