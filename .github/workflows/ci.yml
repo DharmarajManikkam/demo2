@@ -1,16 +1,15 @@
-name: Data Cleaning CI
+name: CI Pipeline
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   run-cleaning:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -22,7 +21,20 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run cleaning job
+      - name: Create Databricks config file
+        run: |
+          mkdir -p ~/.databricks
+          cat <<EOF > ~/.databricks/config
+host = ${DATABRICKS_HOST}
+token = ${DATABRICKS_TOKEN}
+serverless = true
+warehouse_id = ${DATABRICKS_WAREHOUSE_ID}
+http_path = ${DATABRICKS_HTTP_PATH}
+catalog = ${DATABRICKS_CATALOG}
+schema = ${DATABRICKS_SCHEMA}
+EOF
+
+      - name: Run data cleaning
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
