@@ -6,6 +6,9 @@ from pyspark.sql import functions as F
 # -------------------------------------------
 #  Create Databricks Spark Session (v15)
 # -------------------------------------------
+from databricks.sdk import Config
+from databricks.connect import DatabricksSession
+
 def get_spark_session():
     print("Initializing Databricks Spark session via Databricks Connect v15...")
 
@@ -14,8 +17,14 @@ def get_spark_session():
         token=os.getenv("DATABRICKS_TOKEN")
     )
 
-    return DatabricksSession.builder.config(cfg).getOrCreate()
+    # Required for SQL Warehouse
+    if os.getenv("DATABRICKS_HTTP_PATH"):
+        cfg.http_path = os.getenv("DATABRICKS_HTTP_PATH")
 
+    spark = DatabricksSession.builder.sdkConfig(cfg).getOrCreate()
+
+    print("Spark session created successfully!")
+    return spark
 
 # -------------------------------------------
 #  Cleaning Logic
