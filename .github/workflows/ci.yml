@@ -21,25 +21,21 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Create Databricks config file
+      - name: Create Databricks config
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
           DATABRICKS_WAREHOUSE_ID: ${{ secrets.DATABRICKS_WAREHOUSE_ID }}
-          DATABRICKS_CATALOG: workspace
-          DATABRICKS_SCHEMA: feature_store_project
         run: |
           mkdir -p ~/.databricks
-          cat <<EOF > ~/.databricks/config
-host = ${DATABRICKS_HOST}
-token = ${DATABRICKS_TOKEN}
-serverless = true
-warehouse_id = ${DATABRICKS_WAREHOUSE_ID}
-http_path = ${DATABRICKS_HTTP_PATH}
-catalog = ${DATABRICKS_CATALOG}
-schema = ${DATABRICKS_SCHEMA}
-EOF
+          echo "host = ${DATABRICKS_HOST}" > ~/.databricks/config
+          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databricks/config
+          echo "serverless = true" >> ~/.databricks/config
+          echo "warehouse_id = ${DATABRICKS_WAREHOUSE_ID}" >> ~/.databricks/config
+          echo "http_path = ${DATABRICKS_HTTP_PATH}" >> ~/.databricks/config
+          echo "catalog = workspace" >> ~/.databricks/config
+          echo "schema = feature_store_project" >> ~/.databricks/config
 
       - name: Run data cleaning script
         env:
@@ -47,7 +43,5 @@ EOF
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
           DATABRICKS_WAREHOUSE_ID: ${{ secrets.DATABRICKS_WAREHOUSE_ID }}
-          DATABRICKS_CATALOG: workspace
-          DATABRICKS_SCHEMA: feature_store_project
         run: |
           python src/cleaning/data_cleaning.py
