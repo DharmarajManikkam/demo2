@@ -1,0 +1,13 @@
+host: ${DATABRICKS_HOST}
+token: ${DATABRICKS_TOKEN}
+
+# SQL Warehouse only - NO cluster_id
+warehouse_id: ${DATABRICKS_WAREHOUSE_ID}
+
+catalog: ${DATABRICKS_CATALOG}
+schema: ${DATABRICKS_SCHEMA}
+
+connect:
+  server_hostname: ${DATABRICKS_HOST}
+  http_path: ${DATABRICKS_HTTP_PATH}
+  token: ${DATABRICKS_TOKEN}
